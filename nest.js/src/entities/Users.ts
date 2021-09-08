@@ -1,9 +1,12 @@
 import {
   Column,
+  CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   Index,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { ChannelChats } from './ChannelChats';
 import { ChannelMembers } from './ChannelMembers';
@@ -27,13 +30,13 @@ export class Users {
   @Column('varchar', { name: 'password', length: 100 })
   password: string;
 
-  @Column('datetime', { name: 'createdAt' })
+  @CreateDateColumn()
   createdAt: Date;
 
-  @Column('datetime', { name: 'updatedAt' })
+  @UpdateDateColumn()
   updatedAt: Date;
 
-  @Column('datetime', { name: 'deletedAt', nullable: true })
+  @DeleteDateColumn()
   deletedAt: Date | null;
 
   @OneToMany(() => ChannelChats, (channelChats) => channelChats.user)
