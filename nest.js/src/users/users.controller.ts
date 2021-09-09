@@ -29,9 +29,9 @@ export class UsersController {
   }
 
   @Post()
-  register(@Body() data: JoinRequestDto) {
+  async register(@Body() data: JoinRequestDto) {
     const { email, nickname, password } = data;
-    this.usersService.register(email, nickname, password);
+    await this.usersService.register(email, nickname, password);
   }
 
   @ApiResponse({

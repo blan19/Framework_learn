@@ -8,18 +8,24 @@ import bcrypt from 'bcrypt';
 export class UsersService {
   constructor(
     @InjectRepository(Users)
-    private usersRepository: Repository<Users>,
+    private userRepository: Repository<Users>,
   ) {}
 
-  async findByEmail(email: string) {
-    return await this.usersRepository.findOne({
+  async findByEmail(email: string): Promise<any> {
+    const user = await this.userRepository.findOne({
       where: { email },
-      select: ['id', 'email', 'password'],
+      select: ['id', 'email', 'nickname'],
     });
+
+    return user;
   }
 
-  async register(email: string, nickname: string, password: string) {
-    const user = await this.usersRepository.findOne({ where: { email } });
+  async register(
+    email: string,
+    nickname: string,
+    password: string,
+  ): Promise<any> {
+    const user = await this.userRepository.findOne({ where: { email } });
 
     if (user) {
       throw new HttpException('이미 존재하는 계정입니다', 401);
@@ -27,12 +33,12 @@ export class UsersService {
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    await this.usersRepository.save({
+    const { password: userPassword, ...rest } = await this.userRepository.save({
       email,
       nickname,
       password: hashedPassword,
     });
 
-    return true;
+    return rest;
   }
 }

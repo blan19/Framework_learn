@@ -4,6 +4,8 @@ import { AppModule } from './app.module';
 import cookieParser from 'cookie-parser';
 import passport from 'passport';
 import session from 'express-session';
+import { HttpExceptionFilter } from './middlewares/httpExceptionFilter';
+import { ValidationPipe } from '@nestjs/common';
 
 declare const module: any;
 
@@ -11,6 +13,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const PORT = process.env.PORT || 4001;
 
+  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalFilters(new HttpExceptionFilter());
   const config = new DocumentBuilder()
     .setTitle('Slack')
     .setDescription('The Slack API description')
