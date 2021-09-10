@@ -16,7 +16,7 @@ export class AuthService {
   async validateUser(email: string, password: string) {
     const user = await this.usersRepository.findOne({
       where: { email },
-      select: ['id', 'email', 'password'],
+      select: ['id', 'email', 'password', 'nickname'],
     });
 
     if (!user) {
@@ -27,16 +27,17 @@ export class AuthService {
 
     if (result) {
       const { password, ...userSerialize } = user;
+
       return userSerialize;
     }
 
     return null;
   }
 
-  async login(user: any) {
-    const payload = { email: user.email, sub: user.id };
-    return {
-      access_token: this.jwtService.sign(payload),
+  async login(user) {
+    const payload = {
+      ...user,
     };
+    return this.jwtService.sign(payload);
   }
 }

@@ -1,5 +1,14 @@
-import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Request,
+  Response,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from 'src/auth/auth.service';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { RegisterDto } from 'src/dto/register.dto';
 import { UsersService } from './users.service';
@@ -10,6 +19,12 @@ export class UsersController {
     private usersService: UsersService,
     private authService: AuthService,
   ) {}
+
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  async getUser(@Request() req) {
+    return req.user;
+  }
 
   @Post('/register')
   async register(
@@ -28,7 +43,14 @@ export class UsersController {
 
   @UseGuards(LocalAuthGuard)
   @Post('/login')
-  async login(@Request() req) {
-    return this.authService.login(req.user);
+  async login(@Request() req, @Response({ passthrough: true }) res) {
+    const token = await this.authService.login(req.user);
+
+    if (!token) {
+      return null;
+    }
+
+    await res.cookie('access_cookie', token, { httpOnly: true });
+    return { success: true };
   }
 }

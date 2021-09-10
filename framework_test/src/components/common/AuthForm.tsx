@@ -8,6 +8,8 @@ import {
   Input,
 } from "../../pages/Login/styles";
 import { useForm } from "react-hook-form";
+import axios from "axios";
+import KakaoBtn from "./KakaoBtn";
 
 interface PropsTypes {
   type: string;
@@ -15,6 +17,7 @@ interface PropsTypes {
 
 interface FormData {
   email: string;
+  nickname: string;
   password: string;
   passwordConfirm: string;
 }
@@ -33,9 +36,36 @@ const AuthForm = ({ type }: PropsTypes) => {
 
   const onSubmit = useCallback(
     (data: FormData) => {
-      const { email, password } = data;
-      console.log(email, password);
+      const { email, password, nickname } = data;
 
+      const fetch = async () => {
+        try {
+          if (type === "Signup") {
+            await axios
+              .post(
+                "http://localhost:4000/api/users/register",
+                { email, password, nickname },
+                { withCredentials: true }
+              )
+              .then((res) => console.log(res))
+              .catch((e) => console.log(e));
+          }
+
+          if (type === "Login") {
+            await axios
+              .post(
+                "http://localhost:4000/api/users/login",
+                { email, password },
+                { withCredentials: true }
+              )
+              .then((res) => console.log(res))
+              .catch((e) => console.log(e));
+          }
+        } catch (e) {
+          console.log(e);
+        }
+      };
+      fetch();
       reset({
         email: "",
         password: "",
@@ -64,6 +94,27 @@ const AuthForm = ({ type }: PropsTypes) => {
           <ErrorMessage>
             <p>이메일 형식으로 입력해주세요!</p>
           </ErrorMessage>
+        )}
+        {type === "Signup" && (
+          <>
+            <label>Nickname</label>
+            <Input
+              {...register("nickname", {
+                required: true,
+                minLength: 2,
+              })}
+            />
+            {errors.nickname?.type === "required" && (
+              <ErrorMessage>
+                <p>닉네임을 입력해주세요!</p>
+              </ErrorMessage>
+            )}
+            {errors.nickname?.type === "minLength" && (
+              <ErrorMessage>
+                <p>2글자 이상 입력해주세요!</p>
+              </ErrorMessage>
+            )}
+          </>
         )}
         <label>Password</label>
         <Input
@@ -107,6 +158,9 @@ const AuthForm = ({ type }: PropsTypes) => {
         ) : (
           <Button type="submit">회원가입</Button>
         )}
+        <div style={{ display: "inherit" }}>
+          <KakaoBtn />
+        </div>
         <div className="signup">
           {type === "Login" && (
             <span>

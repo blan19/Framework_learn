@@ -1,5 +1,8 @@
-const Key = process.env.SECRET_KEY;
+import dotenv from 'dotenv';
 
-export const jwtConstants = {
-  secret: Key,
+dotenv.config();
+export const constants = {
+  secret: process.env.TOKEN_KEY,
+  kakaoKey: process.env.KAKAO_KEY,
+  callbackUrl: process.env.KAKAO_URL,
 };
