@@ -8,7 +8,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from 'src/auth/auth.service';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { RegisterDto } from 'src/dto/register.dto';
 import { UsersService } from './users.service';
@@ -20,7 +19,6 @@ export class UsersController {
     private authService: AuthService,
   ) {}
 
-  @UseGuards(JwtAuthGuard)
   @Get()
   async getUser(@Request() req) {
     return req.user;

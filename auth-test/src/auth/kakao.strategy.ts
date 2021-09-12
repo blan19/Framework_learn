@@ -21,31 +21,30 @@ export class KakaoStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(accessToken, refreshToken, profile, done): Promise<any> {
-    const { id, _json, username } = profile;
+    const { id, provider } = profile;
 
-    const user = {
-      id,
-      email: _json.kakao_account.email || null,
-      nickname: username,
-    };
-
-    const kakaoEmail = await this.usersRepository.findOne({
-      where: { email: _json.kakao_account.email },
+    const exist = await this.usersRepository.findOne({
+      provider,
+      snsId: id,
     });
 
-    if (kakaoEmail) {
-      const token = await this.authService.login(user);
-      return token;
+    if (exist) {
+      const { password, snsId, ...rest } = exist;
+      return rest;
     }
 
     const newUser = await this.usersRepository.save({
-      email: _json.kakao_account.email,
-      nickname: username,
+      nickname: profile.username,
+      snsId: profile.id,
+      provider: profile.provider,
+      email:
+        profile._json &&
+        profile._json.kakao_account.has_email &&
+        profile._json.kakao_account.email,
       password: null,
     });
 
-    const { password, ...rest } = newUser;
-    const token = await this.authService.login(rest);
-    return token;
+    const { snsId, password, ...rest } = newUser;
+    return rest;
   }
 }

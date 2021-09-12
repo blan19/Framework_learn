@@ -15,29 +15,30 @@ export class Users {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
 
-  @ApiProperty({
-    example: 'oponize@naver.com',
-    description: '이메일',
-    required: true,
+  @Column('varchar', {
+    name: 'email',
+    unique: true,
+    length: 30,
+    nullable: true,
   })
-  @Column('varchar', { name: 'email', unique: true, length: 30 })
   email: string;
 
-  @ApiProperty({
-    example: 'oponize',
-    description: '닉네임',
-    required: true,
-  })
   @Column('varchar', { name: 'nickname', length: 30 })
   nickname: string;
 
-  @ApiProperty({
-    example: '********',
-    description: '패스워드',
-    required: true,
+  @Column('varchar', {
+    name: 'password',
+    select: false,
+    length: 100,
+    nullable: true,
   })
-  @Column('varchar', { name: 'password', select: false, length: 100 })
-  password: string;
+  password: string | null;
+
+  @Column('int', { name: 'snsId', nullable: true })
+  snsId: number | null;
+
+  @Column('varchar', { name: 'provider', default: 'local' })
+  provider: string;
 
   @CreateDateColumn()
   createAt: Date;
