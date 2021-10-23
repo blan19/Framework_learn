@@ -8,6 +8,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from 'src/auth/auth.service';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { RegisterDto } from 'src/dto/register.dto';
 import { UsersService } from './users.service';
@@ -33,7 +34,7 @@ export class UsersController {
     const data = await this.usersService.register(email, nickname, password);
 
     if (data) {
-      return data;
+      return { success: true, data };
     } else {
       return new Error('회원가입에 실패했습니다');
     }
@@ -50,5 +51,14 @@ export class UsersController {
 
     await res.cookie('access_cookie', token, { httpOnly: true });
     return { success: true };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/profile')
+  async getProfile(@Request() req) {
+    if (!req.user) {
+      return null;
+    }
+    return { success: true, data: req.user };
   }
 }
