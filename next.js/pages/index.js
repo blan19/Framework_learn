@@ -1,14 +1,11 @@
-import Head from "next/head";
 import Layout from "../components/layout";
 
-const Home = () => {
+const index = () => {
   return (
-    <>
-      <Layout>
-        <p>hello next~</p>
-      </Layout>
-    </>
+    <Layout>
+      <h1>Main Page</h1>
+    </Layout>
   );
 };
 
-export default Home;
+export default index;
