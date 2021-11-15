@@ -9,7 +9,7 @@ const store = configureStore({
     count: countSlice,
     todos: todoSlice,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(pokemonApi.middleware),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat([pokemonApi.middleware]),
 })
 
 export default store;
