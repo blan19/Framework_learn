@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { OauthModule } from './oauth/oauth.module';
 import { UsersModule } from './users/users.module';
 import { MovieModule } from './movie/movie.module';
+import { AuthModule } from './auth/auth.module';
 import * as ormconfig from '../ormconfig';
 
 @Module({
@@ -15,6 +16,7 @@ import * as ormconfig from '../ormconfig';
     OauthModule,
     UsersModule,
     MovieModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

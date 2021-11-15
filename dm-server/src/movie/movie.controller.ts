@@ -1,4 +1,14 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Post } from '@nestjs/common';
 
-@Controller('movie')
-export class MovieController {}
+@Controller('/api/movie')
+export class MovieController {
+  @Post('/register')
+  register() {
+    return null;
+  }
+
+  @Post('/delete')
+  delete() {
+    return null;
+  }
+}
