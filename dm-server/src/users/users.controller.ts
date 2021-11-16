@@ -25,11 +25,11 @@ export class UsersController {
   @UseGuards(NotLoggedInGuard)
   @Post('/register')
   async register(@Request() req) {
-    const { email, password } = req;
+    const { email, password } = req.body;
     const user = await this.userService.findByEmail(email);
 
-    if (!user) {
-      throw new HttpException('존재하지 않는 이메일입니다', 401);
+    if (user) {
+      throw new HttpException('이미 등록된 이메일입니다', 401);
     }
 
     const result = await this.userService.register(email, password);

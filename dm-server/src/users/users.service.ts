@@ -20,6 +20,8 @@ export class UsersService {
 
   async register(email: string, password: string) {
     try {
+      console.log(email, password);
+
       const user = await getManager()
         .createQueryBuilder(Users, 'user')
         .where('user.email = :email', { email })
