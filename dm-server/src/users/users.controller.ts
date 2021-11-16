@@ -41,14 +41,16 @@ export class UsersController {
     }
   }
 
-  @UseGuards(NotLoggedInGuard)
   @UseGuards(LocalAuthGuard)
   @Post('/login')
   login(@Request() req) {
-    return req.user;
+    const user = req.user;
+    if (user) {
+      return user;
+    }
+    return null;
   }
 
-  @UseGuards(LoggedInGuard)
   @Post('/logout')
   logout(@Response({ passthrough: true }) res) {
     res.clearCookie('connect.sid', { httpOnly: true });

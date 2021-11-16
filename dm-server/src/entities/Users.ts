@@ -29,6 +29,6 @@ export class Users {
   @DeleteDateColumn()
   deleteAt: Date;
 
-  @OneToMany(() => Wish, (wish) => wish.user)
+  @OneToMany(() => Wish, (wish) => wish.user, { cascade: true })
   wishList: Wish[];
 }
