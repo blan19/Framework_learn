@@ -10,6 +10,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { LocalAuthGuard } from 'src/auth/local-auth.guard';
+import { LoggedInGuard } from 'src/auth/logged-in.guard';
+import { NotLoggedInGuard } from 'src/auth/not-logged-in.guard';
 import { UsersService } from './users.service';
 
 @Controller('/api/users')
@@ -20,6 +22,7 @@ export class UsersController {
     return null;
   }
 
+  @UseGuards(NotLoggedInGuard)
   @Post('/register')
   async register(@Request() req) {
     const { email, password } = req;
@@ -38,12 +41,14 @@ export class UsersController {
     }
   }
 
+  @UseGuards(NotLoggedInGuard)
   @UseGuards(LocalAuthGuard)
   @Post('/login')
   login(@Request() req) {
     return req.user;
   }
 
+  @UseGuards(LoggedInGuard)
   @Post('/logout')
   logout(@Response({ passthrough: true }) res) {
     res.clearCookie('connect.sid', { httpOnly: true });
