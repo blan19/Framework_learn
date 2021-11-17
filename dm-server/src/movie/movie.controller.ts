@@ -1,6 +1,10 @@
 import {
   Controller,
+  Get,
   HttpException,
+  HttpStatus,
+  Param,
+  ParseIntPipe,
   Post,
   Request,
   UseGuards,
@@ -11,6 +15,24 @@ import { MovieService } from './movie.service';
 @Controller('/api/movie')
 export class MovieController {
   constructor(private movieService: MovieService) {}
+  @Get(':id')
+  async getWish(
+    @Param('id', ParseIntPipe)
+    id: number,
+  ) {
+    console.log(id);
+
+    if (!id) {
+      throw new HttpException('유저 아이디를 보내주세요', 401);
+    }
+    // const wishList = await this.movieService.get_wishList(userId);
+
+    // if (wishList) {
+    //   return wishList;
+    // }
+    return null;
+  }
+
   @UseGuards(LoggedInGuard)
   @Post('/register')
   async register(@Request() req) {

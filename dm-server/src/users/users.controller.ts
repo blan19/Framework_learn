@@ -12,14 +12,17 @@ import {
 import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { LoggedInGuard } from 'src/auth/logged-in.guard';
 import { NotLoggedInGuard } from 'src/auth/not-logged-in.guard';
+import { User } from 'src/decorator/user.decorator';
 import { UsersService } from './users.service';
 
 @Controller('/api/users')
 export class UsersController {
   constructor(private userService: UsersService) {}
-  @Get()
-  getUsers() {
-    return null;
+  @Get('/')
+  getUsers(@User() user) {
+    console.log(user);
+
+    return user;
   }
 
   @UseGuards(NotLoggedInGuard)

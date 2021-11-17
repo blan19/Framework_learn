@@ -11,6 +11,28 @@ export class MovieService {
     @InjectRepository(Wish) private wishRepository: Repository<Wish>,
     private connection: Connection,
   ) {}
+  async get_wishList(userId: number) {
+    try {
+      const user = await this.connection.manager
+        .getRepository(Users)
+        .findOne({ where: { id: userId } });
+
+      if (!user) {
+        throw new HttpException('유저 정보가 존재하지않습니다.', 401);
+      }
+
+      const wishList = user.wishList;
+
+      if (!wishList) {
+        throw new HttpException('위시리스트가 존재하지 않습니다', 401);
+      }
+
+      return wishList;
+    } catch (e) {
+      console.error(e);
+    }
+    return null;
+  }
   async register_wishList(movieId: number, userId: number) {
     try {
       const user = await getManager()
@@ -18,16 +40,10 @@ export class MovieService {
         .where('user.id = :userId', { userId })
         .getOne();
 
-      user.wishList.forEach((item) => {
-        if (item.movieId === movieId) {
-          throw new HttpException('이미 위시리스트에 존재합니다.', 401);
-        }
-      });
-
       const wish = await getManager()
         .createQueryBuilder(Wish, 'wish')
         .where('wish.movieId = :movieId', { movieId })
-        .andWhere('wish.user = :user', { user })
+        .andWhere('wish.user.id = :id', { id: user.id })
         .getOne();
       if (!wish) {
         await getManager()
@@ -40,9 +56,9 @@ export class MovieService {
           })
           .execute();
         return { success: true, msg: '위시리스트에 저장했습니다' };
+      } else {
+        throw new HttpException('이미 위시리스트에 존재합니다', 401);
       }
-
-      return null;
     } catch (e) {
       console.error(e);
     }
