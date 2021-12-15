@@ -20,8 +20,11 @@ export class MovieService {
       if (!user) {
         throw new HttpException('유저 정보가 존재하지않습니다.', 401);
       }
+      const wishList = await this.connection.manager
+        .getRepository(Wish)
+        .find({ where: { user } });
 
-      const wishList = user.wishList;
+      console.log(wishList);
 
       if (!wishList) {
         throw new HttpException('위시리스트가 존재하지 않습니다', 401);
